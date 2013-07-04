@@ -18,6 +18,8 @@ module ActiveRecord
         end
         
         def exec_query(sql, name = 'SQL', binds = [], sqlserver_options = {})
+          # This is so no id is tried to be updated
+          sql.gsub! /, \[id\] = @[0-9]*/, '' if sql =~ /UPDATE/ && sql =~ /, \[id\] = /
           if id_insert_table_name = sqlserver_options[:insert] ? query_requires_identity_insert?(sql) : nil
             with_identity_insert_enabled(id_insert_table_name) { do_exec_query(sql, name, binds) }
           else
