@@ -48,7 +48,6 @@ module ActiveRecord
                     retry
                   else
                     rollback_db_transaction
-                    rollback_transaction
                   end
                 else
                   rollback_to_savepoint
