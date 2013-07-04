@@ -48,11 +48,11 @@ module ActiveRecord
                     retry
                   else
                     rollback_db_transaction
-                    rollback_transaction_records(true)
+                    rollback_transaction
                   end
                 else
                   rollback_to_savepoint
-                  rollback_transaction_records(true)
+                  rollback_transaction
                 end
               end
               raise unless database_transaction_rollback.is_a?(::ActiveRecord::Rollback)
