@@ -413,12 +413,11 @@ module ActiveRecord
         def handle_to_names_and_values_dblib(handle, options={})
           query_options = {}.tap do |qo|
             qo[:timezone] = ActiveRecord::Base.default_timezone || :utc
-            qo[:as] = :array #(options[:ar_result] || options[:fetch] == :rows) ? :array : :hash
+            qo[:as] = (options[:ar_result] || options[:fetch] == :rows) ? :array : :hash
           end
           results = handle.each(query_options)
           columns = lowercase_schema_reflection ? handle.fields.map { |c| c.downcase } : handle.fields
-          #options[:ar_result] ? ActiveRecord::Result.new(columns, results) : results
-          ActiveRecord::Result.new(columns, results)
+          options[:ar_result] ? ActiveRecord::Result.new(columns, results) : results
         end
         
         def handle_to_names_and_values_odbc(handle, options={})
