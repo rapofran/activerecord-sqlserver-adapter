@@ -140,7 +140,7 @@ module ActiveRecord
           select_rows("dbcc useroptions",'SCHEMA').inject(HashWithIndifferentAccess.new) do |values,row|
             set_option = row.values[0].gsub(/\s+/,'_') if row.instance_of? Hash
             set_option = row[0].gsub(/\s+/,'_') if row.instance_of? Array
-            user_value = row.values[1]  if row.instance_of? Has
+            user_value = row.values[1]  if row.instance_of? Hash
             user_value = row[1]  if row.instance_of? Array
             values[set_option] = user_value
             values
