@@ -48,15 +48,13 @@ module ActiveRecord
           do_execute "EXEC sp_rename '#{table_name}', '#{new_name}'"
         end
         
-        def remove_column(table_name, *column_names)
-          raise ArgumentError.new("You must specify at least one column name.  Example: remove_column(:people, :first_name)") if column_names.empty?
-          ActiveSupport::Deprecation.warn 'Passing array to remove_columns is deprecated, please use multiple arguments, like: `remove_columns(:posts, :foo, :bar)`', caller if column_names.flatten!
-          column_names.flatten.each do |column_name|
-            remove_check_constraints(table_name, column_name)
-            remove_default_constraint(table_name, column_name)
-            remove_indexes(table_name, column_name)
-            do_execute "ALTER TABLE #{quote_table_name(table_name)} DROP COLUMN #{quote_column_name(column_name)}"
-          end
+        def remove_column(table_name, column_name, type = nil)
+          raise ArgumentError.new("You must specify at least one column name.  Example: remove_column(:people, :first_name)") if (column_name.is_a? Array)
+          ActiveSupport::Deprecation.warn 'Passing multiple arguments to remove_columns is deprecated, please use just one column name, like: `remove_columns(:posts, :column_name, :type)`', caller if column_name
+          remove_check_constraints(table_name, column_name)
+          remove_default_constraint(table_name, column_name)
+          remove_indexes(table_name, column_name)
+          do_execute "ALTER TABLE #{quote_table_name(table_name)} DROP COLUMN #{quote_column_name(column_name)}"
         end
 
         def change_column(table_name, column_name, type, options = {})
